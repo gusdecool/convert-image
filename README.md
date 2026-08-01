@@ -1,6 +1,8 @@
-# convert-image
+![convert image](./doc/convert-image-web.webp)
 
-Desktop app to convert image seamlessly for Web, email, etc.
+# Convert Image
+
+User friendly desktop app to convert image seamlessly for Web, email, etc.
 
 ## Project Setup
 

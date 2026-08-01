@@ -1,4 +1,4 @@
-import { app, shell, BrowserWindow } from 'electron'
+import { app, shell, BrowserWindow, nativeImage } from 'electron'
 import { join } from 'path'
 import { electronApp, optimizer, is } from '@electron-toolkit/utils'
 import icon from '../../resources/icon.png?asset'
@@ -11,7 +11,7 @@ function createWindow(): void {
     height: 720,
     show: false,
     autoHideMenuBar: true,
-    ...(process.platform === 'linux' ? { icon } : {}),
+    icon,
     webPreferences: {
       preload: join(__dirname, '../preload/index.js'),
       sandbox: true,
@@ -44,6 +44,13 @@ function createWindow(): void {
 app.whenReady().then(() => {
   // Set app user model id for windows
   electronApp.setAppUserModelId('com.electron')
+
+  // Packaged builds get their dock icon from the .app bundle's Info.plist (set by
+  // electron-builder from build/icon.icns), but running unpackaged in dev shows Electron's
+  // default icon unless we set it explicitly at runtime.
+  if (is.dev && process.platform === 'darwin') {
+    app.dock?.setIcon(nativeImage.createFromPath(icon))
+  }
 
   // Default open or close DevTools by F12 in development
   // and ignore CommandOrControl + R in production.
