@@ -3,6 +3,7 @@ name: Release
 on:
   release:
     types: [published]
+  workflow_dispatch:
 
 permissions:
   contents: write
@@ -46,6 +47,7 @@ jobs:
           CSC_IDENTITY_AUTO_DISCOVERY: false
 
       - name: Attach artifacts to the release
+        if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
         with:
           files: ${{ matrix.artifacts }}
