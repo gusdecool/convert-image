@@ -1,0 +1,51 @@
+name: Release
+
+on:
+  release:
+    types: [published]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: macos-latest
+            script: build:mac
+            artifacts: |
+              dist/*.dmg
+              dist/*.zip
+          - os: windows-latest
+            script: build:win
+            artifacts: |
+              dist/*.exe
+          - os: ubuntu-latest
+            script: build:linux
+            artifacts: |
+              dist/*.AppImage
+              dist/*.deb
+
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: oven-sh/setup-bun@v2
+        with:
+          bun-version: latest
+
+      - run: bun install --frozen-lockfile
+
+      - run: bun run ${{ matrix.script }}
+        env:
+          # No paid Developer ID certificate is configured, so skip macOS code signing
+          # instead of failing when electron-builder can't find one.
+          CSC_IDENTITY_AUTO_DISCOVERY: false
+
+      - name: Attach artifacts to the release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ matrix.artifacts }}
