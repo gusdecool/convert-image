@@ -17,9 +17,9 @@
     "build": "bun run typecheck && electron-vite build",
     "postinstall": "electron-builder install-app-deps",
     "build:unpack": "bun run build && electron-builder --dir",
-    "build:win": "bun run build && electron-builder --win",
-    "build:mac": "electron-vite build && electron-builder --mac",
-    "build:linux": "bun run build && electron-builder --linux",
+    "build:win": "bun run build && electron-builder --win --publish never",
+    "build:mac": "electron-vite build && electron-builder --mac --publish never",
+    "build:linux": "bun run build && electron-builder --linux --publish never",
     "test": "bun test"
   },
   "dependencies": {
